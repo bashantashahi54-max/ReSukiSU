@@ -1,0 +1,33 @@
+name: Build ReSukiSU Manager
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-manager:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build Manager (Release)
+        run: ./gradlew :manager:assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReSukiSU-Manager
+          path: manager/build/outputs/apk/release/*.apk
